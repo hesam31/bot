@@ -12,8 +12,63 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 ADD_CHANNEL, DEL_CHANNEL, ADD_SERVER, DEL_SERVER = range(4)
 
+MSG_EMOJIS = {
+    "welcome": {"id": "6316501178368663573", "char": "🦅"},
+    "error":   {"id": "5348132683304156113", "char": "❌"},
+    "success": {"id": "4958725487682650920", "char": "✅"},
+    "rocket":  {"id": "4958725487682650920", "char": "🚀"},
+    "active":  {"id": "4956720180337050608", "char": "🟢"},
+    "expired": {"id": "4956582500865410174", "char": "🔴"},
+    "id_tag":  {"id": "4958686613933655185", "char": "🆔"},
+    "box":     {"id": "5409380072291316349", "char": "📦"},
+    "time":    {"id": "5350773074578916842", "char": "⏳"},
+    "profile": {"id": "5348136664738839786", "char": "👤"},
+    "book":    {"id": "4956436416142771580", "char": "📚"},
+    "card":    {"id": "5940563313720037057", "char": "🔥"},
+    "money":   {"id": "5956324890213619515", "char": "💸"},
+    "bell":    {"id": "4956368164817470478", "char": "🔔"},
+    "refresh": {"id": "4956418939920843885", "char": "🔄"},
+    "admin":   {"id": "5971818172985117571", "char": "🛠"},
+    "name":    {"id": "5972072533833289156", "char": "📛"},
+    "list":    {"id": "5974235702701853774", "char": "📋"},
+    "speaker": {"id": "5972240522889138094", "char": "📢"},
+    "mail":    {"id": "5852830669599674051", "char": "📬"},
+    "camera":  {"id": "4992254300202730194", "char": "📷"},
+    "warning": {"id": "5350470691701407492", "char": "⚠️"},
+    "trash":   {"id": "4956475826762679249", "char": "🗑"},
+    "diamond": {"id": "5348270285466385224", "char": "🆕"},
+    "bullet":  {"id": "5350572310627632617", "char": "✅"},
+    "test":    {"id": "4958725487682650920", "char": "🎁"},
+    "sedora":  {"id":"6316422138085514606",  "char": "🦅"},
+    "pin":  {"id":"5348498060466996739",  "char": "📌"},
+    "PRIME":  {"id":"5350618807943576963",  "char": "⚡️"},
+    "NUMBER":  {"id":"5350477112677515642",  "char": "⚠️"},
+    "accept":  {"id":"5348404473129614535",  "char": "✅"},
+    "hand":  {"id":"5990225492282709220",  "char": "🫱"},
+    "link":  {"id":"5841171023096976223",  "char": "🔥"},
+    "invite":  {"id":"5348438459205831716",  "char": "🐾"},
+    "support":  {"id":"5979065840102810733",  "char": "👩‍💻"},
+    "orders":  {"id":"5348090777308251395",  "char": "🕐"},
+    "paein":  {"id":"5350700390847365132",  "char": "⏬"},
+    "back":  {"id":"5348514879558926674",  "char": "❌"},    
+    "stats":  {"id":"5990060518293901972",  "char": "❌"},
+    "not":  {"id":"5989790729923203577",  "char": "🚫"},
+    "servers":  {"id":"5841171023096976223",  "char": "🔥"},
+    "stars":  {"id":"5841394116583232174",  "char": "🔥"},
+    "gift":  {"id":"5970037062932371393",  "char": "⭕️"},
+    "taeid":  {"id":"6073335669260819751",  "char": "👍"},
+    "rules":  {"id":"5987863552327684435",  "char": "🚫"},
+    "rule":  {"id":"5956564630993114415",  "char": "💸"},
+}
+
 def db():
     return psycopg2.connect(DATABASE_URL)
+
+def te(name):
+    e = MSG_EMOJIS.get(name)
+    if not e:
+        return ""
+    return f"<emoji id='{e['id']}'>{e['char']}</emoji>"    
 
 def init_db():
     con=db(); cur=con.cursor()
@@ -57,9 +112,17 @@ async def start(update:Update, context:ContextTypes.DEFAULT_TYPE):
 
     if not await joined_all(u.id, context.bot):
         channels=get_setting("channels")
-        txt="برای دریافت سرور عضو کانال‌های زیر شوید:\n\n" + "\n".join(channels)
-        kb=[[InlineKeyboardButton("بررسی عضویت",callback_data="check_join")]]
-        await update.message.reply_text(txt,reply_markup=InlineKeyboardMarkup(kb))
+        txt=(
+            f"{te('sedora')} <b>به Sedora VPN خوش آمدید</b>\n\n"
+            f"{te('invite')} برای دریافت سرویس تست ابتدا در کانال‌های زیر عضو شوید:\n\n"
+            + "\n".join([f"{te('bullet')} {c}" for c in channels]) +
+            f"\n\n{te('accept')} پس از عضویت روی دکمه زیر کلیک کنید.")        
+        InlineKeyboardButton(f"{te('accept')} بررسی عضویت",callback_data="check_join")        
+        await update.message.reply_text(
+    txt,
+    reply_markup=InlineKeyboardMarkup(kb),
+    parse_mode="HTML"
+)
         return
 
     await send_server(u.id, update, context)
@@ -70,17 +133,27 @@ async def send_server(uid, update, context):
     r=cur.fetchone()
 
     if r and r[0]:
-        msg=f"شما قبلاً سرور دریافت کرده‌اید:\n\n{r[1]}"
+        msg=(
+    f"{te('warning')} شما قبلاً یک سرور تست دریافت کرده‌اید.\n\n"
+    f"{te('servers')} <code>{r[1]}</code>"
+)
     else:
         servers=get_setting("servers")
         if not servers:
-            msg="سروری موجود نیست."
+            msg=(
+    f"{te('not')} <b>در حال حاضر سرور تست موجود نیست.</b>\n\n"
+    f"{te('support')} برای اطلاع از زمان فعال شدن مجدد با پشتیبانی در ارتباط باشید."
+)
         else:
             server=servers.pop(0)
             set_setting("servers",servers)
             cur.execute("UPDATE users SET got_server=TRUE,server=%s WHERE user_id=%s",(server,uid))
             con.commit()
-            msg=f"سرور شما:\n\n{server}"
+            msg=(
+    f"{te('gift')} <b>سرور تست شما آماده است</b>\n\n"
+    f"{te('servers')} <code>{server}</code>\n\n"
+    f"{te('warning')} پیشنهاد می‌شود از NapsternetV یا V2Box استفاده کنید.\n"
+)
     con.close()
 
     if update.callback_query:
@@ -94,19 +167,23 @@ async def check_join(update, context):
     if await joined_all(q.from_user.id, context.bot):
         await send_server(q.from_user.id, update, context)
     else:
-        await q.message.reply_text("هنوز عضو همه کانال‌ها نشده‌اید.")
+        await q.message.reply_text(f"{te('warning')} هنوز در تمامی کانال‌های اجباری عضو نشده‌اید.")
 
 def admin_kb():
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("➕ افزودن کانال",callback_data="add_ch")],
-        [InlineKeyboardButton("❌ حذف کانال",callback_data="del_ch")],
-        [InlineKeyboardButton("➕ افزودن سرور",callback_data="add_sv")],
-        [InlineKeyboardButton("❌ حذف سرور",callback_data="del_sv")],
-    ])
+    [InlineKeyboardButton(f"{te('diamond')} افزودن کانال",callback_data="add_ch")],
+    [InlineKeyboardButton(f"{te('trash')} حذف کانال",callback_data="del_ch")],
+    [InlineKeyboardButton(f"{te('servers')} افزودن سرور",callback_data="add_sv")],
+    [InlineKeyboardButton(f"{te('not')} حذف سرور",callback_data="del_sv")],
+])
 
 async def admin(update, context):
     if update.effective_user.id!=ADMIN_ID: return
-    await update.message.reply_text("پنل مدیریت",reply_markup=admin_kb())
+    await update.message.reply_text(
+    f"{te('admin')} <b>پنل مدیریت Sedora</b>",
+    reply_markup=admin_kb(),
+    parse_mode="HTML"
+)
 
 async def panel(update, context):
     q=update.callback_query; await q.answer()
@@ -125,7 +202,7 @@ async def add_channel(update, context):
     data=get_setting("channels")
     data.append(update.message.text.strip())
     set_setting("channels",data)
-    await update.message.reply_text("ثبت شد.")
+    await update.message.reply_text(f"{te('success')} عملیات با موفقیت انجام شد.")
     return ConversationHandler.END
 
 async def del_channel(update, context):
@@ -133,14 +210,14 @@ async def del_channel(update, context):
     ch=update.message.text.strip()
     if ch in data: data.remove(ch)
     set_setting("channels",data)
-    await update.message.reply_text("حذف شد.")
+    await update.message.reply_text(f"{te('success')} عملیات با موفقیت انجام شد.")
     return ConversationHandler.END
 
 async def add_server(update, context):
     servers=get_setting("servers")
     servers.extend([x.strip() for x in update.message.text.splitlines() if x.strip()])
     set_setting("servers",servers)
-    await update.message.reply_text("سرورها اضافه شدند.")
+    await update.message.reply_text(f"{te('success')} عملیات با موفقیت انجام شد.")
     return ConversationHandler.END
 
 async def del_server(update, context):
@@ -148,7 +225,7 @@ async def del_server(update, context):
     s=update.message.text.strip()
     if s in servers: servers.remove(s)
     set_setting("servers",servers)
-    await update.message.reply_text("حذف شد.")
+    await update.message.reply_text(f"{te('success')} عملیات با موفقیت انجام شد.")
     return ConversationHandler.END
 
 def main():
