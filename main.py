@@ -110,31 +110,25 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     con = db()
     cur = con.cursor()
     cur.execute(
-        "INSERT INTO users(user_id, username) VALUES(%s,%s) ON CONFLICT DO NOTHING",
+        "INSERT INTO users(user_id,username) VALUES(%s,%s) ON CONFLICT DO NOTHING",
         (u.id, u.username)
     )
     con.commit()
     con.close()
 
-    # اگر عضو همه کانال‌ها نیست
     if not await joined_all(u.id, context.bot):
         channels = get_setting("channels")
 
+        kb = [
+            [InlineKeyboardButton(f"{te('accept')} بررسی عضویت", callback_data="check_join")]
+        ]
+
         txt = (
             f"{te('sedora')} <b>به Sedora VPN خوش آمدید</b>\n\n"
-            f"{te('invite')} برای دریافت سرویس تست ابتدا در کانال‌های زیر عضو شوید:\n\n"
+            f"{te('invite')} برای دریافت سرویس تست، ابتدا عضو کانال‌ها شوید:\n\n"
             + "\n".join([f"{te('bullet')} {c}" for c in channels]) +
-            f"\n\n{te('accept')} پس از عضویت روی دکمه زیر کلیک کنید."
+            f"\n\n{te('warning')} پس از عضویت روی دکمه زیر کلیک کنید"
         )
-
-        kb = [
-            [
-                InlineKeyboardButton(
-                    f"{te('accept')} بررسی عضویت",
-                    callback_data="check_join"
-                )
-            ]
-        ]
 
         await update.message.reply_text(
             txt,
@@ -143,42 +137,52 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    # اگر عضو بود مستقیم سرور بده
     await send_server(u.id, update, context)
 
 async def send_server(uid, update, context):
-    con=db(); cur=con.cursor()
-    cur.execute("SELECT got_server,server FROM users WHERE user_id=%s",(uid,))
-    r=cur.fetchone()
+    con = db()
+    cur = con.cursor()
+
+    cur.execute("SELECT got_server,server FROM users WHERE user_id=%s", (uid,))
+    r = cur.fetchone()
 
     if r and r[0]:
-        msg=(
-    f"{te('warning')} شما قبلاً یک سرور تست دریافت کرده‌اید.\n\n"
-    f"{te('servers')} <code>{r[1]}</code>"
-)
+        msg = (
+            f"{te('warning')} <b>شما قبلاً سرور دریافت کرده‌اید</b>\n\n"
+            f"{te('servers')} <code>{r[1]}</code>"
+        )
+
     else:
-        servers=get_setting("servers")
+        servers = get_setting("servers")
+
         if not servers:
-            msg=(
-    f"{te('not')} <b>در حال حاضر سرور تست موجود نیست.</b>\n\n"
-    f"{te('support')} برای اطلاع از زمان فعال شدن مجدد با پشتیبانی در ارتباط باشید."
-)
+            msg = (
+                f"{te('not')} <b>سرور فعلاً موجود نیست</b>\n\n"
+                f"{te('support')} به زودی دوباره فعال می‌شود"
+            )
         else:
-            server=servers.pop(0)
-            set_setting("servers",servers)
-            cur.execute("UPDATE users SET got_server=TRUE,server=%s WHERE user_id=%s",(server,uid))
+            server = servers.pop(0)
+            set_setting("servers", servers)
+
+            cur.execute(
+                "UPDATE users SET got_server=TRUE,server=%s WHERE user_id=%s",
+                (server, uid)
+            )
             con.commit()
-            msg=(
-    f"{te('gift')} <b>سرور تست شما آماده است</b>\n\n"
-    f"{te('servers')} <code>{server}</code>\n\n"
-    f"{te('warning')} پیشنهاد می‌شود از NapsternetV یا V2Box استفاده کنید.\n"
-)
+
+            msg = (
+                f"{te('gift')} <b>سرور تست شما آماده است</b>\n\n"
+                f"{te('servers')} <code>{server}</code>\n\n"
+                f"{te('warning')} پیشنهاد: NapsternetV یا V2Box\n"
+                f"{te('rocket')} اتصال سریع و پایدار"
+            )
+
     con.close()
 
     if update.callback_query:
-        await update.callback_query.message.reply_text(msg)
+        await update.callback_query.message.reply_text(msg, parse_mode="HTML")
     else:
-        await update.message.reply_text(msg)
+        await update.message.reply_text(msg, parse_mode="HTML")
 
 async def check_join(update, context):
     q=update.callback_query
@@ -190,31 +194,38 @@ async def check_join(update, context):
 
 def admin_kb():
     return InlineKeyboardMarkup([
-    [InlineKeyboardButton(f"{te('diamond')} افزودن کانال",callback_data="add_ch")],
-    [InlineKeyboardButton(f"{te('trash')} حذف کانال",callback_data="del_ch")],
-    [InlineKeyboardButton(f"{te('servers')} افزودن سرور",callback_data="add_sv")],
-    [InlineKeyboardButton(f"{te('not')} حذف سرور",callback_data="del_sv")],
-])
+        [InlineKeyboardButton(f"{te('diamond')} افزودن کانال", callback_data="add_ch")],
+        [InlineKeyboardButton(f"{te('trash')} حذف کانال", callback_data="del_ch")],
+        [InlineKeyboardButton(f"{te('servers')} افزودن سرور", callback_data="add_sv")],
+        [InlineKeyboardButton(f"{te('not')} حذف سرور", callback_data="del_sv")],
+    ])
 
 async def admin(update, context):
-    if update.effective_user.id!=ADMIN_ID: return
+    if update.effective_user.id != ADMIN_ID:
+        return
+
     await update.message.reply_text(
-    f"{te('admin')} <b>پنل مدیریت Sedora</b>",
-    reply_markup=admin_kb(),
-    parse_mode="HTML"
-)
+        f"{te('admin')} <b>پنل مدیریت Sedora</b>\n"
+        f"{te('list')} مدیریت کامل سرورها و کانال‌ها",
+        reply_markup=admin_kb(),
+        parse_mode="HTML"
+    )
 
 async def panel(update, context):
-    q=update.callback_query; await q.answer()
-    if q.from_user.id!=ADMIN_ID: return ConversationHandler.END
+    q = update.callback_query
+    await q.answer()
 
-    m={
-        "add_ch":("آیدی کانال را بفرست",ADD_CHANNEL),
-        "del_ch":("آیدی کانال را بفرست",DEL_CHANNEL),
-        "add_sv":("سرورها را خط به خط ارسال کن",ADD_SERVER),
-        "del_sv":("سرور را ارسال کن",DEL_SERVER)
+    if q.from_user.id != ADMIN_ID:
+        return ConversationHandler.END
+
+    m = {
+        "add_ch": (f"{te('pin')} آیدی کانال را ارسال کنید", ADD_CHANNEL),
+        "del_ch": (f"{te('trash')} آیدی کانال را ارسال کنید", DEL_CHANNEL),
+        "add_sv": (f"{te('servers')} سرورها را خط به خط ارسال کنید", ADD_SERVER),
+        "del_sv": (f"{te('warning')} سرور مورد نظر را ارسال کنید", DEL_SERVER),
     }
-    await q.message.reply_text(m[q.data][0])
+
+    await q.message.reply_text(m[q.data][0], parse_mode="HTML")
     return m[q.data][1]
 
 async def add_channel(update, context):
