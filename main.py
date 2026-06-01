@@ -8,7 +8,7 @@ from telegram.ext import (
 
 BOT_TOKEN = "8997328313:AAH5lmrQjODXNjlK0eJmAp-Pfb1ejuE3-7k"
 ADMIN_IDS = [81469723]
-DATABASE_URL = os.getenv("postgresql://postgres:gjJEwHheFYTwIVmHuiIytCLBGqThEoCX@postgres.railway.internal:5432/railway")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 ADD_CHANNEL, DEL_CHANNEL, ADD_SERVER, DEL_SERVER = range(4)
 
