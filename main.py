@@ -6,99 +6,112 @@ from telegram.ext import (
     MessageHandler, ConversationHandler, ContextTypes, filters
 )
 
-BOT_TOKEN = "8997328313:AAHVyW2QDr_CbO9fMoscUQXwbjgjwRY3nXQ"
+BOT_TOKEN = "8997328313:AAH5lmrQJODXNjlK0eJmAp-Pfb1ejuE3-7k"
 ADMIN_ID = 81469723
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 ADD_CHANNEL, DEL_CHANNEL, ADD_SERVER, DEL_SERVER = range(4)
 
+# 💎 Premium UI Safe Emojis (NO custom emoji tags)
 MSG_EMOJIS = {
-    "welcome": {"id": "6316501178368663573", "char": "🦅"},
-    "error":   {"id": "5348132683304156113", "char": "❌"},
-    "success": {"id": "4958725487682650920", "char": "✅"},
-    "rocket":  {"id": "4958725487682650920", "char": "🚀"},
-    "active":  {"id": "4956720180337050608", "char": "🟢"},
-    "expired": {"id": "4956582500865410174", "char": "🔴"},
-    "id_tag":  {"id": "4958686613933655185", "char": "🆔"},
-    "box":     {"id": "5409380072291316349", "char": "📦"},
-    "time":    {"id": "5350773074578916842", "char": "⏳"},
-    "profile": {"id": "5348136664738839786", "char": "👤"},
-    "book":    {"id": "4956436416142771580", "char": "📚"},
-    "card":    {"id": "5940563313720037057", "char": "🔥"},
-    "money":   {"id": "5956324890213619515", "char": "💸"},
-    "bell":    {"id": "4956368164817470478", "char": "🔔"},
-    "refresh": {"id": "4956418939920843885", "char": "🔄"},
-    "admin":   {"id": "5971818172985117571", "char": "🛠"},
-    "name":    {"id": "5972072533833289156", "char": "📛"},
-    "list":    {"id": "5974235702701853774", "char": "📋"},
-    "speaker": {"id": "5972240522889138094", "char": "📢"},
-    "mail":    {"id": "5852830669599674051", "char": "📬"},
-    "camera":  {"id": "4992254300202730194", "char": "📷"},
-    "warning": {"id": "5350470691701407492", "char": "⚠️"},
-    "trash":   {"id": "4956475826762679249", "char": "🗑"},
-    "diamond": {"id": "5348270285466385224", "char": "🆕"},
-    "bullet":  {"id": "5350572310627632617", "char": "✅"},
-    "test":    {"id": "4958725487682650920", "char": "🎁"},
-    "sedora":  {"id":"6316422138085514606",  "char": "🦅"},
-    "pin":  {"id":"5348498060466996739",  "char": "📌"},
-    "PRIME":  {"id":"5350618807943576963",  "char": "⚡️"},
-    "NUMBER":  {"id":"5350477112677515642",  "char": "⚠️"},
-    "accept":  {"id":"5348404473129614535",  "char": "✅"},
-    "hand":  {"id":"5990225492282709220",  "char": "🫱"},
-    "link":  {"id":"5841171023096976223",  "char": "🔥"},
-    "invite":  {"id":"5348438459205831716",  "char": "🐾"},
-    "support":  {"id":"5979065840102810733",  "char": "👩‍💻"},
-    "orders":  {"id":"5348090777308251395",  "char": "🕐"},
-    "paein":  {"id":"5350700390847365132",  "char": "⏬"},
-    "back":  {"id":"5348514879558926674",  "char": "❌"},    
-    "stats":  {"id":"5990060518293901972",  "char": "❌"},
-    "not":  {"id":"5989790729923203577",  "char": "🚫"},
-    "servers":  {"id":"5841171023096976223",  "char": "🔥"},
-    "stars":  {"id":"5841394116583232174",  "char": "🔥"},
-    "gift":  {"id":"5970037062932371393",  "char": "⭕️"},
-    "taeid":  {"id":"6073335669260819751",  "char": "👍"},
-    "rules":  {"id":"5987863552327684435",  "char": "🚫"},
-    "rule":  {"id":"5956564630993114415",  "char": "💸"},
+    "welcome": "🦅",
+    "error": "❌",
+    "success": "✅",
+    "rocket": "🚀",
+    "active": "🟢",
+    "expired": "🔴",
+    "id_tag": "🆔",
+    "box": "📦",
+    "time": "⏳",
+    "profile": "👤",
+    "book": "📚",
+    "card": "🔥",
+    "money": "💸",
+    "bell": "🔔",
+    "refresh": "🔄",
+    "admin": "🛠",
+    "name": "📛",
+    "list": "📋",
+    "speaker": "📢",
+    "mail": "📬",
+    "camera": "📷",
+    "warning": "⚠️",
+    "trash": "🗑",
+    "diamond": "🆕",
+    "bullet": "•",
+    "test": "🎁",
+    "sedora": "🦅",
+    "pin": "📌",
+    "prime": "⚡️",
+    "number": "⚠️",
+    "accept": "✅",
+    "hand": "🫱",
+    "link": "🔥",
+    "invite": "🐾",
+    "support": "👩‍💻",
+    "orders": "🕐",
+    "down": "⏬",
+    "back": "❌",
+    "stats": "📊",
+    "not": "🚫",
+    "servers": "🔥",
+    "stars": "✨",
+    "gift": "🎁",
+    "taeid": "👍",
+    "rules": "🚫",
+    "rule": "💸",
 }
+
+# 💎 SAFE emoji function
+def te(name):
+    return MSG_EMOJIS.get(name, "")
 
 def db():
     return psycopg2.connect(DATABASE_URL)
 
-def te(name):
-    e = MSG_EMOJIS.get(name)
-    if not e:
-        return ""
-    return f"<emoji id='{e['id']}'>{e['char']}</emoji>"    
-
 def init_db():
-    con=db(); cur=con.cursor()
+    con = db()
+    cur = con.cursor()
     cur.execute("CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY,value TEXT)")
     cur.execute("""CREATE TABLE IF NOT EXISTS users(
         user_id BIGINT PRIMARY KEY,
         username TEXT,
         got_server BOOLEAN DEFAULT FALSE,
         server TEXT)""")
-    for k in ["channels","servers"]:
-        cur.execute("INSERT INTO settings(key,value) VALUES(%s,%s) ON CONFLICT DO NOTHING",(k,"[]"))
-    con.commit(); con.close()
+
+    for k in ["channels", "servers"]:
+        cur.execute(
+            "INSERT INTO settings(key,value) VALUES(%s,%s) ON CONFLICT DO NOTHING",
+            (k, "[]")
+        )
+
+    con.commit()
+    con.close()
 
 def get_setting(key):
-    con=db(); cur=con.cursor()
-    cur.execute("SELECT value FROM settings WHERE key=%s",(key,))
-    r=cur.fetchone(); con.close()
+    con = db()
+    cur = con.cursor()
+    cur.execute("SELECT value FROM settings WHERE key=%s", (key,))
+    r = cur.fetchone()
+    con.close()
     return json.loads(r[0]) if r else []
 
-def set_setting(key,val):
-    con=db(); cur=con.cursor()
-    cur.execute("UPDATE settings SET value=%s WHERE key=%s",(json.dumps(val),key))
-    con.commit(); con.close()
+def set_setting(key, val):
+    con = db()
+    cur = con.cursor()
+    cur.execute(
+        "UPDATE settings SET value=%s WHERE key=%s",
+        (json.dumps(val), key)
+    )
+    con.commit()
+    con.close()
 
 async def joined_all(user_id, bot):
-    channels=get_setting("channels")
+    channels = get_setting("channels")
     for ch in channels:
         try:
-            m=await bot.get_chat_member(ch,user_id)
-            if m.status in ["left","kicked"]:
+            m = await bot.get_chat_member(ch, user_id)
+            if m.status in ["left", "kicked"]:
                 return False
         except:
             return False
@@ -185,12 +198,15 @@ async def send_server(uid, update, context):
         await update.message.reply_text(msg, parse_mode="HTML")
 
 async def check_join(update, context):
-    q=update.callback_query
+    q = update.callback_query
     await q.answer()
+
     if await joined_all(q.from_user.id, context.bot):
         await send_server(q.from_user.id, update, context)
     else:
-        await q.message.reply_text(f"{te('warning')} هنوز در تمامی کانال‌های اجباری عضو نشده‌اید.")
+        await q.message.reply_text(
+            f"{te('warning')} هنوز در تمامی کانال‌های اجباری عضو نشده‌اید."
+        )
 
 def admin_kb():
     return InlineKeyboardMarkup([
@@ -229,53 +245,56 @@ async def panel(update, context):
     return m[q.data][1]
 
 async def add_channel(update, context):
-    data=get_setting("channels")
+    data = get_setting("channels")
     data.append(update.message.text.strip())
-    set_setting("channels",data)
-    await update.message.reply_text(f"{te('success')} عملیات با موفقیت انجام شد.")
+    set_setting("channels", data)
+    await update.message.reply_text(f"{te('success')} انجام شد.")
     return ConversationHandler.END
 
 async def del_channel(update, context):
-    data=get_setting("channels")
-    ch=update.message.text.strip()
-    if ch in data: data.remove(ch)
-    set_setting("channels",data)
-    await update.message.reply_text(f"{te('success')} عملیات با موفقیت انجام شد.")
+    data = get_setting("channels")
+    ch = update.message.text.strip()
+    if ch in data:
+        data.remove(ch)
+    set_setting("channels", data)
+    await update.message.reply_text(f"{te('success')} انجام شد.")
     return ConversationHandler.END
 
 async def add_server(update, context):
-    servers=get_setting("servers")
+    servers = get_setting("servers")
     servers.extend([x.strip() for x in update.message.text.splitlines() if x.strip()])
-    set_setting("servers",servers)
-    await update.message.reply_text(f"{te('success')} عملیات با موفقیت انجام شد.")
+    set_setting("servers", servers)
+    await update.message.reply_text(f"{te('success')} انجام شد.")
     return ConversationHandler.END
 
 async def del_server(update, context):
-    servers=get_setting("servers")
-    s=update.message.text.strip()
-    if s in servers: servers.remove(s)
-    set_setting("servers",servers)
-    await update.message.reply_text(f"{te('success')} عملیات با موفقیت انجام شد.")
+    servers = get_setting("servers")
+    s = update.message.text.strip()
+    if s in servers:
+        servers.remove(s)
+    set_setting("servers", servers)
+    await update.message.reply_text(f"{te('success')} انجام شد.")
     return ConversationHandler.END
 
 def main():
     init_db()
-    app=Application.builder().token(BOT_TOKEN).build()
 
-    conv=ConversationHandler(
-        entry_points=[CallbackQueryHandler(panel,pattern="^(add_ch|del_ch|add_sv|del_sv)$")],
+    app = Application.builder().token(BOT_TOKEN).build()
+
+    conv = ConversationHandler(
+        entry_points=[CallbackQueryHandler(panel, pattern="^(add_ch|del_ch|add_sv|del_sv)$")],
         states={
-            ADD_CHANNEL:[MessageHandler(filters.TEXT & ~filters.COMMAND, add_channel)],
-            DEL_CHANNEL:[MessageHandler(filters.TEXT & ~filters.COMMAND, del_channel)],
-            ADD_SERVER:[MessageHandler(filters.TEXT & ~filters.COMMAND, add_server)],
-            DEL_SERVER:[MessageHandler(filters.TEXT & ~filters.COMMAND, del_server)],
+            ADD_CHANNEL: [MessageHandler(filters.TEXT & ~filters.COMMAND, add_channel)],
+            DEL_CHANNEL: [MessageHandler(filters.TEXT & ~filters.COMMAND, del_channel)],
+            ADD_SERVER: [MessageHandler(filters.TEXT & ~filters.COMMAND, add_server)],
+            DEL_SERVER: [MessageHandler(filters.TEXT & ~filters.COMMAND, del_server)],
         },
         fallbacks=[]
     )
 
-    app.add_handler(CommandHandler("start",start))
-    app.add_handler(CommandHandler("admin",admin))
-    app.add_handler(CallbackQueryHandler(check_join,pattern="^check_join$"))
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("admin", admin))
+    app.add_handler(CallbackQueryHandler(check_join, pattern="^check_join$"))
     app.add_handler(conv)
 
     app.run_polling()
