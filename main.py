@@ -6,7 +6,7 @@ from telegram.ext import (
     MessageHandler, ConversationHandler, ContextTypes, filters
 )
 
-BOT_TOKEN = "8997328313:AAH5lmrQjODXNjlK0eJmAp-Pfb1ejuE3-7k"
+BOT_TOKEN = "8997328313:AAHVyW2QDr_CbO9fMoscUQXwbjgjwRY3nXQ"
 ADMIN_ID = 81469723
 DATABASE_URL = os.getenv("DATABASE_URL")
 
