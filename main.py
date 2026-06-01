@@ -104,27 +104,46 @@ async def joined_all(user_id, bot):
             return False
     return True
 
-async def start(update:Update, context:ContextTypes.DEFAULT_TYPE):
-    u=update.effective_user
-    con=db(); cur=con.cursor()
-    cur.execute("INSERT INTO users(user_id,username) VALUES(%s,%s) ON CONFLICT DO NOTHING",(u.id,u.username))
-    con.commit(); con.close()
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    u = update.effective_user
 
+    con = db()
+    cur = con.cursor()
+    cur.execute(
+        "INSERT INTO users(user_id, username) VALUES(%s,%s) ON CONFLICT DO NOTHING",
+        (u.id, u.username)
+    )
+    con.commit()
+    con.close()
+
+    # اگر عضو همه کانال‌ها نیست
     if not await joined_all(u.id, context.bot):
-        channels=get_setting("channels")
-        txt=(
+        channels = get_setting("channels")
+
+        txt = (
             f"{te('sedora')} <b>به Sedora VPN خوش آمدید</b>\n\n"
             f"{te('invite')} برای دریافت سرویس تست ابتدا در کانال‌های زیر عضو شوید:\n\n"
             + "\n".join([f"{te('bullet')} {c}" for c in channels]) +
-            f"\n\n{te('accept')} پس از عضویت روی دکمه زیر کلیک کنید.")        
-        InlineKeyboardButton(f"{te('accept')} بررسی عضویت",callback_data="check_join")        
+            f"\n\n{te('accept')} پس از عضویت روی دکمه زیر کلیک کنید."
+        )
+
+        kb = [
+            [
+                InlineKeyboardButton(
+                    f"{te('accept')} بررسی عضویت",
+                    callback_data="check_join"
+                )
+            ]
+        ]
+
         await update.message.reply_text(
-    txt,
-    reply_markup=InlineKeyboardMarkup(kb),
-    parse_mode="HTML"
-)
+            txt,
+            reply_markup=InlineKeyboardMarkup(kb),
+            parse_mode="HTML"
+        )
         return
 
+    # اگر عضو بود مستقیم سرور بده
     await send_server(u.id, update, context)
 
 async def send_server(uid, update, context):
