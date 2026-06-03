@@ -182,7 +182,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not await joined_all(u.id, context.bot):
         channels = get_setting("channels")
 
-        txt = f"{te('bell')} برای ادامه عضو کانال‌ها شوید:\n\n"
+        txt = f"برای ادامه عضو کانال‌ها شوید:\n\n"
         txt += "\n".join([f"• {c}" for c in channels])
 
         kb = InlineKeyboardMarkup([
