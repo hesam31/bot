@@ -8,22 +8,17 @@ from telegram.ext import (
 )
 
 # =========================
-# CONFIG (SAFE)
+# CONFIG
 # =========================
 BOT_TOKEN = "8997328313:AAH-sbq8-7iUPSLU_g9ICPoBEFti9w9wTCw"
 ADMIN_ID = 81469723
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-if not BOT_TOKEN:
-    raise Exception("BOT_TOKEN is not set!")
-if not DATABASE_URL:
-    raise Exception("DATABASE_URL is not set!")
-
 # =========================
-# EMOJIS (CUSTOM SAFE SYSTEM)
+# EMOJIS SYSTEM
 # =========================
 MSG_EMOJIS = {
-     "welcome": {"id": "6316501178368663573", "char": "🦅"},
+    "welcome": {"id": "6316501178368663573", "char": "🦅"},
     "error":   {"id": "5348132683304156113", "char": "❌"},
     "success": {"id": "4958725487682650920", "char": "✅"},
     "rocket":  {"id": "4958725487682650920", "char": "🚀"},
@@ -47,42 +42,22 @@ MSG_EMOJIS = {
     "warning": {"id": "5350470691701407492", "char": "⚠️"},
     "trash":   {"id": "4956475826762679249", "char": "🗑"},
     "diamond": {"id": "5348270285466385224", "char": "🆕"},
-    "bullet":  {"id": "5350572310627632617", "char": "✅"},
-    "test":    {"id": "4958725487682650920", "char": "🎁"},
-    "sedora":  {"id":"6316422138085514606",  "char": "🦅"},
-    "pin":  {"id":"5348498060466996739",  "char": "📌"},
-    "PRIME":  {"id":"5350618807943576963",  "char": "⚡️"},
-    "NUMBER":  {"id":"5350477112677515642",  "char": "⚠️"},
-    "accept":  {"id":"5348404473129614535",  "char": "✅"},
-    "hand":  {"id":"5990225492282709220",  "char": "🫱"},
-    "link":  {"id":"5841171023096976223",  "char": "🔥"},
-    "invite":  {"id":"5348438459205831716",  "char": "🐾"},
-    "support":  {"id":"5979065840102810733",  "char": "👩‍💻"},
-    "orders":  {"id":"5348090777308251395",  "char": "🕐"},
-    "paein":  {"id":"5350700390847365132",  "char": "⏬"},
-    "back":  {"id":"5348514879558926674",  "char": "❌"},    
-    "stats":  {"id":"5990060518293901972",  "char": "❌"},
-    "not":  {"id":"5989790729923203577",  "char": "🚫"},
-    "servers":  {"id":"5841171023096976223",  "char": "🔥"},
-    "stars":  {"id":"5841394116583232174",  "char": "🔥"},
-    "gift":  {"id":"5970037062932371393",  "char": "⭕️"},
-    "taeid":  {"id":"6073335669260819751",  "char": "👍"},
-    "rules":  {"id":"5987863552327684435",  "char": "🚫"},
-    "rule":  {"id":"5956564630993114415",  "char": "💸"},
-    "nv":  {"id":"6050626661043411760",  "char": "💸"},
-    "v2box":  {"id":"5866266486942733691",  "char": "💸"},
-    "ok":  {"id":"6102503234549586828",  "char": "✅"},
+    "bullet":  {"id": "5350572310627632617", "char": "•"},
+    "invite":  {"id": "5348438459205831716", "char": "🐾"},
+    "support": {"id": "5979065840102810733", "char": "👩‍💻"},
+    "servers": {"id": "5841171023096976223", "char": "🔥"},
+    "gift":    {"id": "5970037062932371393", "char": "🎁"},
+    "accept":  {"id": "5348404473129614535", "char": "✅"},
+    "back":    {"id": "5348514879558926674", "char": "↩️"},
+    "not":     {"id": "5989790729923203577", "char": "🚫"},
+    "PRIME":   {"id": "5350618807943576963", "char": "⚡️"},
 }
 
-# ✔ FIXED emoji function (NO ID LEAK ANYMORE)
 def te(name: str) -> str:
-    e = MSG_EMOJIS.get(name)
-    if not e:
-        return ""
-    return e.get("char", "")
+    return MSG_EMOJIS.get(name, {}).get("char", "")
 
 # =========================
-# DATABASE
+# DB
 # =========================
 def db():
     return psycopg2.connect(DATABASE_URL)
@@ -171,10 +146,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
 
         txt = (
-            f"{te('sedora')} <b>به Sedora VPN خوش آمدید</b>\n\n"
-            f"{te('invite')} برای دریافت سرویس تست، ابتدا عضو کانال‌ها شوید:\n\n"
+            f"{te('welcome')} <b>به ربات خوش آمدید</b>\n\n"
+            f"{te('invite')} برای ادامه باید عضو شوید:\n\n"
             + "\n".join([f"{te('bullet')} {c}" for c in channels]) +
-            f"\n\n{te('warning')} پس از عضویت روی دکمه زیر کلیک کنید"
+            f"\n\n{te('warning')} بعد از عضویت دکمه زیر را بزنید"
         )
 
         await update.message.reply_text(txt, reply_markup=InlineKeyboardMarkup(kb), parse_mode="HTML")
@@ -183,7 +158,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await send_server(u.id, update, context)
 
 # =========================
-# SERVER SEND
+# SERVER
 # =========================
 async def send_server(uid, update, context):
     con = db()
@@ -209,7 +184,7 @@ async def send_server(uid, update, context):
             )
             con.commit()
 
-            msg = f"{te('gift')} سرور شما آماده است:\n\n{te('servers')} {server}"
+            msg = f"{te('gift')} سرور شما:\n\n{te('servers')} {server}"
 
     con.close()
 
@@ -228,10 +203,10 @@ async def check_join(update, context):
     if await joined_all(q.from_user.id, context.bot):
         await send_server(q.from_user.id, update, context)
     else:
-        await q.message.reply_text(f"{te('warning')} هنوز عضو همه کانال‌ها نیستید")
+        await q.message.reply_text(f"{te('warning')} هنوز عضو نشده‌اید")
 
 # =========================
-# ADMIN PANEL
+# ADMIN
 # =========================
 def admin_kb():
     return InlineKeyboardMarkup([
@@ -251,7 +226,7 @@ async def admin(update, context):
     )
 
 # =========================
-# PANEL HANDLER
+# CONVERSATION
 # =========================
 ADD_CHANNEL, DEL_CHANNEL, ADD_SERVER, DEL_SERVER = range(4)
 
@@ -259,28 +234,22 @@ async def panel(update, context):
     q = update.callback_query
     await q.answer()
 
-    if q.from_user.id != ADMIN_ID:
-        return ConversationHandler.END
-
     mapping = {
-        "add_ch": ("آیدی کانال را ارسال کنید", ADD_CHANNEL),
-        "del_ch": ("آیدی کانال را ارسال کنید", DEL_CHANNEL),
-        "add_sv": ("سرورها را ارسال کنید", ADD_SERVER),
-        "del_sv": ("سرور را ارسال کنید", DEL_SERVER),
+        "add_ch": ("کانال:", ADD_CHANNEL),
+        "del_ch": ("کانال:", DEL_CHANNEL),
+        "add_sv": ("سرور:", ADD_SERVER),
+        "del_sv": ("سرور:", DEL_SERVER),
     }
 
     txt, state = mapping[q.data]
     await q.message.reply_text(txt)
     return state
 
-# =========================
-# CHANNEL / SERVER OPS
-# =========================
 async def add_channel(update, context):
     data = get_setting("channels")
     data.append(update.message.text.strip())
     set_setting("channels", data)
-    await update.message.reply_text("OK")
+    await update.message.reply_text(te("success"))
     return ConversationHandler.END
 
 async def del_channel(update, context):
@@ -289,14 +258,14 @@ async def del_channel(update, context):
     if val in data:
         data.remove(val)
     set_setting("channels", data)
-    await update.message.reply_text("OK")
+    await update.message.reply_text(te("success"))
     return ConversationHandler.END
 
 async def add_server(update, context):
     servers = get_setting("servers")
     servers.extend(update.message.text.splitlines())
     set_setting("servers", servers)
-    await update.message.reply_text("OK")
+    await update.message.reply_text(te("success"))
     return ConversationHandler.END
 
 async def del_server(update, context):
@@ -305,7 +274,7 @@ async def del_server(update, context):
     if val in servers:
         servers.remove(val)
     set_setting("servers", servers)
-    await update.message.reply_text("OK")
+    await update.message.reply_text(te("success"))
     return ConversationHandler.END
 
 # =========================
