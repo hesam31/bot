@@ -182,11 +182,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not await joined_all(u.id, context.bot):
         channels = get_setting("channels")
 
-        txt = f"برای ادامه عضو کانال‌ها شوید:\n\n"
+        txt = f"{te('warning')} برای ادامه عضو کانال‌ها شوید:\n\n"
         txt += "\n".join([f"• {c}" for c in channels])
 
         kb = InlineKeyboardMarkup([
-            [InlineKeyboardButton("بررسی عضویت",style="success",callback_data="check_join")]
+            [InlineKeyboardButton("بررسی عضویت",callback_data="check_join")]
         ])
 
         await update.message.reply_text(txt, reply_markup=kb)
