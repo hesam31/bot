@@ -6,7 +6,7 @@ from telegram.ext import (
     MessageHandler, ConversationHandler, ContextTypes, filters
 )
 
-BOT_TOKEN = "8997328313:AAH5lmrQJODXNjlK0eJmAp-Pfb1ejuE3-7k"
+BOT_TOKEN = "8997328313:AAH-sbq8-7iUPSLU_g9ICPoBEFti9w9wTCw"
 ADMIN_ID = 81469723
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -14,7 +14,7 @@ ADD_CHANNEL, DEL_CHANNEL, ADD_SERVER, DEL_SERVER = range(4)
 
 # 💎 Premium UI Safe Emojis (NO custom emoji tags)
 MSG_EMOJIS = {
-      "welcome": {"id": "6316501178368663573", "char": "🦅"},
+    "welcome": {"id": "6316501178368663573", "char": "🦅"},
     "error":   {"id": "5348132683304156113", "char": "❌"},
     "success": {"id": "4958725487682650920", "char": "✅"},
     "rocket":  {"id": "4958725487682650920", "char": "🚀"},
