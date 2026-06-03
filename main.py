@@ -129,7 +129,13 @@ async def send_server(uid, update, context):
     row = cur.fetchone()
 
     if row and row[0]:
-        msg = f"{te('warning')} قبلاً سرور گرفته‌اید\n\n🔥 {row[1]}"
+        msg = (
+    f"{te('warning')} <b>شما قبلاً از این ربات سرور دریافت کرده‌اید.</b>\n\n"
+    f"{te('profile')} طبق اطلاعات ثبت‌شده، یک سرور قبلاً به حساب شما اختصاص داده شده است و امکان دریافت مجدد وجود ندارد.\n\n"
+    f"{te('rocket')} اطلاعات سرور اختصاصی شما:\n\n"
+    f"<code>{row[1]}</code>\n\n"
+    f"{te('support')} در صورت بروز هرگونه مشکل یا نیاز به راهنمایی می‌توانید با پشتیبانی در ارتباط باشید."
+)
     else:
         servers = get_setting("servers")
 
@@ -145,7 +151,12 @@ async def send_server(uid, update, context):
             )
             con.commit()
 
-            msg = f"{te('gift')} سرور شما:\n\n🔥 {server}"
+            msg = (
+    f"{te('gift')} <b>تبریک! سرور شما با موفقیت فعال شد.</b>\n\n"
+    f"{te('rocket')} مشخصات سرور اختصاصی شما در ادامه نمایش داده شده است:\n\n"
+    f"<code>{server}</code>\n\n"
+    f"{te('success')} از همراهی شما سپاسگزاریم."
+)
 
     con.close()
 
@@ -176,7 +187,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         txt += "\n".join([f"• {c}" for c in channels])
 
         kb = InlineKeyboardMarkup([
-            [InlineKeyboardButton("بررسی عضویت", callback_data="check_join")]
+            [InlineKeyboardButton("بررسی عضویت",style="success",callback_data="check_join")]
         ])
 
         await update.message.reply_text(txt, reply_markup=kb)
