@@ -209,10 +209,13 @@ def admin_kb():
     ])
 
 async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != ADMIN_ID:
+    if update.effective_user.id not in ADMIN_IDS:
         return
 
-    await update.message.reply_text(f"{te('admin')} پنل ادمین", reply_markup=admin_kb())
+    await update.message.reply_text(
+        f"{te('warning')} پنل ادمین",
+        reply_markup=admin_kb()
+    )
 
 # =========================
 # STATES
