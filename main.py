@@ -44,7 +44,7 @@ InlineKeyboardButton.to_dict = _patched_to_dict
 # تنظیمات اصلی — اینجا ویرایش کنید
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-BOT_TOKEN =("8997328313:AAESG5KXik9CvVJn8vPgGEwGmjK-AeGeGx4")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 DATABASE_URL = os.getenv("DATABASE_URL")
 ADMIN_IDS = [81469723, 1892655576]  # آیدی عددی ادمین‌ها
 
@@ -78,7 +78,7 @@ MSG_EMOJIS = {
 def te(key):
     e = MSG_EMOJIS.get(key)
     if e and e["id"]:
-        return f'<tg-emoji emoji-id="{e["id"]}">{e["char"]}</tg-emoji>'
+        return f'<tg-emoji emoji-id="{e["id"]}">​</tg-emoji>'
     return e["char"] if e else ""
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
