@@ -63,9 +63,9 @@ MSG_EMOJIS = {
     "server":   {"id": "5841171023096976223", "char": "🔥"},
     "stats":    {"id": "5990060518293901972", "char": "📊"},
     "profile":  {"id": "5348136664738839786", "char": "👤"},
-    "warning":  {"id": "5350470691701407492", "char": "⚠️"},
+    "warning":  {"id": "5350470691701407492", "char": "🔔"},
     "back":     {"id": "5348514879558926674", "char": "❌"},
-    "add":      {"id": "4958725487682650920", "char": "➕"},
+    "add":      {"id": "4958725487682650920", "char": "✅"},
     "trash":    {"id": "4956475826762679249", "char": "🗑"},
     "rocket":   {"id": "4958725487682650920", "char": "🚀"},
     "join":     {"id": "5350835008007324644", "char": "🔗"},
@@ -78,7 +78,7 @@ MSG_EMOJIS = {
 def te(key):
     e = MSG_EMOJIS.get(key)
     if e and e["id"]:
-        return f'<tg-emoji emoji-id="{e["id"]}">​</tg-emoji>'
+        return f'<tg-emoji emoji-id="{e["id"]}">{e["char"]}</tg-emoji>'
     return e["char"] if e else ""
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
