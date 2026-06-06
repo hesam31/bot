@@ -166,7 +166,7 @@ def save_db(data):
 def main_menu_kb():
     return InlineKeyboardMarkup([
         [InlineKeyboardButton(
-            f"{MSG_EMOJIS['server']['id']} دریافت سرور",
+            "دریافت سرور",
             callback_data="get_server",
             style="primary",
             icon_custom_emoji_id=MSG_EMOJIS["server"]["id"]
@@ -176,19 +176,19 @@ def main_menu_kb():
 def admin_menu_kb():
     return InlineKeyboardMarkup([
         [InlineKeyboardButton(
-            f"{MSG_EMOJIS['channel']['id']} مدیریت کانال‌های جوین اجباری",
+            "مدیریت کانال‌های جوین اجباری",
             callback_data="admin_channels",
             style="primary",
             icon_custom_emoji_id=MSG_EMOJIS["channel"]["id"]
         )],
         [InlineKeyboardButton(
-            f"{MSG_EMOJIS['server']['id']} مدیریت سرورها",
+            "مدیریت سرورها",
             callback_data="admin_servers",
             style="primary",
             icon_custom_emoji_id=MSG_EMOJIS["server"]["id"]
         )],
         [InlineKeyboardButton(
-            f"{MSG_EMOJIS['stats']['id']} آمار کلی",
+            "آمار کلی",
             callback_data="admin_stats",
             style="primary",
             icon_custom_emoji_id=MSG_EMOJIS["stats"]["id"]
@@ -198,7 +198,7 @@ def admin_menu_kb():
 def back_admin_kb():
     return InlineKeyboardMarkup([[
         InlineKeyboardButton(
-            f"{MSG_EMOJIS['back']['id']} بازگشت",
+            "بازگشت",
             callback_data="back_admin",
             style="danger",
             icon_custom_emoji_id=MSG_EMOJIS["back"]["id"]
@@ -247,9 +247,9 @@ async def check_force_join(update: Update, context: ContextTypes.DEFAULT_TYPE) -
             ])
         rows.append([
             InlineKeyboardButton(
-                "بررسی عضویت ✅",
+                "بررسی عضویت ",
                 callback_data="check_join_btn",
-                style="success",
+                style="danger",
                 icon_custom_emoji_id=MSG_EMOJIS["check"]["id"]
             )
         ])
