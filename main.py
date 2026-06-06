@@ -53,23 +53,23 @@ ADMIN_IDS = [81469723, 1892655576]  # آیدی عددی ادمین‌ها
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 MSG_EMOJIS = {
-    "welcome":  {"id": "6316501178368663573", "char": "🦅"},
+    "welcome":  {"id": "5388632425314140043", "char": "🔈"},
     "success":  {"id": "4958725487682650920", "char": "✅"},
     "error":    {"id": "5348132683304156113", "char": "❌"},
     "active":   {"id": "4956720180337050608", "char": "🟢"},
     "admin":    {"id": "5971818172985117571", "char": "🛠"},
     "list":     {"id": "5974235702701853774", "char": "📋"},
     "channel":  {"id": "4992254300202730194", "char": "📢"},
-    "server":   {"id": "5841171023096976223", "char": "🔥"},
+    "server":   {"id": "5206607081334906820", "char": "✔️"},
     "stats":    {"id": "5990060518293901972", "char": "📊"},
     "profile":  {"id": "5348136664738839786", "char": "👤"},
-    "warning":  {"id": "5350470691701407492", "char": "🔔"},
+    "warning":  {"id": "5440660757194744323", "char": "‼️"},
     "back":     {"id": "5348514879558926674", "char": "❌"},
     "add":      {"id": "4958725487682650920", "char": "✅"},
     "trash":    {"id": "4956475826762679249", "char": "🗑"},
     "rocket":   {"id": "4958725487682650920", "char": "🚀"},
-    "join":     {"id": "5350835008007324644", "char": "🔗"},
-    "check":    {"id": "5972326417940093090", "char": "✅"},
+    "join":     {"id": "5438496463044752972", "char": "⭐️"},
+    "check":    {"id": "5386367538735104399", "char": "⌛️"},
     "box":      {"id": "5409380072291316349", "char": "📦"},
     "time":     {"id": "5350773074578916842", "char": "⏳"},
     "test":     {"id": "4958725487682650920", "char": "🎁"},
@@ -297,7 +297,7 @@ async def check_join_callback(update: Update, context: ContextTypes.DEFAULT_TYPE
     if not all_joined:
         await query.answer("هنوز در همه کانال‌ها عضو نشده‌اید!", show_alert=True)
     else:
-        await query.answer("عضویت شما تأیید شد! ✅", show_alert=True)
+        await query.answer("عضویت شما تأیید شد! ", show_alert=True)
         uid = str(user_id)
         db["users"].setdefault(uid, {})
         db["users"][uid]["is_active"] = True
@@ -308,7 +308,7 @@ async def check_join_callback(update: Update, context: ContextTypes.DEFAULT_TYPE
             pass
         await context.bot.send_message(
             user_id,
-            f"{te('welcome')} <b>خوش آمدید!</b>\n\nگزینه مورد نظر را انتخاب کنید:",
+            f"{te('welcome')} <b>به ربات کانفیگ رایگان خوش امدید !</b>\n\n برای دریافت سرور دکمه ی زیر را لمس کنید:",
             reply_markup=main_menu_kb(),
             parse_mode="HTML"
         )
@@ -567,7 +567,7 @@ async def admin_servers(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     kb = InlineKeyboardMarkup([
         [InlineKeyboardButton(
-            "➕ افزودن سرور",
+            " افزودن سرور",
             callback_data="add_server",
             style="success",
             icon_custom_emoji_id=MSG_EMOJIS["add"]["id"]
@@ -593,7 +593,7 @@ async def add_server_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="HTML",
         reply_markup=InlineKeyboardMarkup([[
             InlineKeyboardButton(
-                "✅ پایان",
+                " پایان",
                 callback_data="finish_servers",
                 style="success",
                 icon_custom_emoji_id=MSG_EMOJIS["check"]["id"]
@@ -620,7 +620,7 @@ async def add_server_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="HTML",
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton(
-                    "✅ پایان",
+                    " پایان",
                     callback_data="finish_servers",
                     style="success",
                     icon_custom_emoji_id=MSG_EMOJIS["check"]["id"]
