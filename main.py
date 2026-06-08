@@ -362,7 +362,6 @@ async def get_server(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if db["users"].get(uid, {}).get("received_server"):
         await query.message.edit_text(
             f"{te('error')} شما قبلاً سرور دریافت کرده‌اید.",
-            reply_markup=main_menu_kb(),
             parse_mode="HTML"
         )
         return
@@ -372,7 +371,6 @@ async def get_server(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not servers:
         await query.message.edit_text(
             f"{te('warning')} در حال حاضر سروری موجود نیست.\nلطفاً بعداً مراجعه کنید.",
-            reply_markup=main_menu_kb(),
             parse_mode="HTML"
         )
         return
@@ -388,7 +386,6 @@ async def get_server(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"<code>{server}</code>\n\n"
         f"{te('warning')}دقت کنید کمپین های ما اپدیت خواهد شد و میتوانید دوباره در دریافت سرور رایگان اقدام نمایید!",
         parse_mode="HTML",
-        reply_markup=main_menu_kb()
     )
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
