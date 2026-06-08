@@ -339,7 +339,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     await update.message.reply_text(
-        f"{te('welcome')} <bبه ربات  نت رایگان خوش امدید!</b>\n\nبرای دریافت سرور رایگان گزینه زیر را انتخاب کنید",
+        f"{te('welcome')} <b>به ربات نت رایگان خوش آمدید!</b>\n\nبرای دریافت سرور رایگان گزینه زیر را انتخاب کنید",
         reply_markup=main_menu_kb(),
         parse_mode="HTML"
     )
