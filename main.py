@@ -60,7 +60,7 @@ MSG_EMOJIS = {
     "admin":    {"id": "5971818172985117571", "char": "🛠"},
     "list":     {"id": "5974235702701853774", "char": "📋"},
     "channel":  {"id": "4992254300202730194", "char": "📢"},
-    "server":   {"id": "5206607081334906820", "char": "✔️"},
+    "server":   {"id": "6100510928069991085", "char": "✅"},
     "stats":    {"id": "5990060518293901972", "char": "📊"},
     "profile":  {"id": "5348136664738839786", "char": "👤"},
     "warning":  {"id": "5440660757194744323", "char": "‼️"},
@@ -73,6 +73,9 @@ MSG_EMOJIS = {
     "box":      {"id": "5409380072291316349", "char": "📦"},
     "time":     {"id": "5350773074578916842", "char": "⏳"},
     "test":     {"id": "4958725487682650920", "char": "🎁"},
+    "gift":     {"id": "6102897190424814224", "char": "🎁"},
+
+
 }
 
 def te(key):
@@ -169,7 +172,7 @@ def main_menu_kb():
             "دریافت سرور",
             callback_data="get_server",
             style="primary",
-            icon_custom_emoji_id=MSG_EMOJIS["server"]["id"]
+            icon_custom_emoji_id=MSG_EMOJIS["gift"]["id"]
         )],
     ])
 
@@ -336,7 +339,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     await update.message.reply_text(
-        f"{te('welcome')} <b>خوش آمدید!</b>\n\nگزینه مورد نظر را انتخاب کنید:",
+        f"{te('welcome')} <bبه ربات  نت رایگان خوش امدید!</b>\n\nبرای دریافت سرور رایگان گزینه زیر را انتخاب کنید",
         reply_markup=main_menu_kb(),
         parse_mode="HTML"
     )
@@ -383,7 +386,7 @@ async def get_server(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.message.edit_text(
         f"{te('server')} <b>سرور شما:</b>\n\n"
         f"<code>{server}</code>\n\n"
-        f"{te('warning')} این سرور مخصوص شماست.",
+        f"{te('warning')}دقت کنید کمپین های ما اپدیت خواهد شد و میتوانید دوباره در دریافت سرور رایگان اقدام نمایید!",
         parse_mode="HTML",
         reply_markup=main_menu_kb()
     )
