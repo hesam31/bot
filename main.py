@@ -44,7 +44,7 @@ InlineKeyboardButton.to_dict = _patched_to_dict
 # تنظیمات اصلی — اینجا ویرایش کنید
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-BOT_TOKEN =("8997328313:AAESG5KXik9CvVJn8vPgGEwGmjK-AeGeGx4")
+BOT_TOKEN =("8902132112:AAFHKipj8oDYWhDgCMMqLmoVfphnWmQBNwQ")
 DATABASE_URL = os.getenv("DATABASE_URL")
 ADMIN_IDS = [81469723, 1892655576]  # آیدی عددی ادمین‌ها
 
