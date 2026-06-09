@@ -686,13 +686,21 @@ async def admin_stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async def set_commands(app):
-    await app.bot.set_my_commands([BotCommand("start", "شروع ربات")])
-    for admin_id in ADMIN_IDS:
-        await app.bot.set_my_commands(
-            [BotCommand("start", "شروع ربات"), BotCommand("admin", "پنل مدیریت")],
-            scope=BotCommandScopeChat(admin_id)
-        )
+    await app.bot.set_my_commands([
+        BotCommand("start", "شروع ربات")
+    ])
 
+    for admin_id in ADMIN_IDS:
+        try:
+            await app.bot.set_my_commands(
+                [
+                    BotCommand("start", "شروع ربات"),
+                    BotCommand("admin", "پنل مدیریت")
+                ],
+                scope=BotCommandScopeChat(admin_id)
+            )
+        except Exception as e:
+            print(f"Admin command error for {admin_id}: {e}")
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # اجرای ربات
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
